@@ -1,0 +1,3 @@
+Points: 10
+
+Comments: In the second program, it is better to name the member variables with a trailing underscore.

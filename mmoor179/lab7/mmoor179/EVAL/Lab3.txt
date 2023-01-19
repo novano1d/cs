@@ -1,0 +1,6 @@
+Points: 10
+
+Comments: The return value for last when there is no item is a bit problematic by design of what we
+	  are trying to do, so it is alright to return a default constructed value.
+	  In the future labs, we will see that this type of operation normally returns an iterator,
+	  through which we can use the idea of returning NULL when there is no item to be returned.

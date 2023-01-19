@@ -1,0 +1,7 @@
+Points: 10
+
+Comments: It is better to use "nullptr" instead of a dynamic array of zero size, but if you do use the
+	  latter, you need to deallocate memory in the copy constructor and assignment operator overloading
+	  function too. But you will always need to deallocate memory in the assignment operator overloading
+	  function, which is missing too!
+

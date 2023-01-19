@@ -1,0 +1,8 @@
+Points: 10
+
+Comments: The program is supposed to find differences in a single line and stop after finding the first
+	  difference on that line.
+
+	  Please be more careful with the lab description in the future!
+
+	  It is better if you write comments on your code. (At the beginnign) The author, date, program's objective.
