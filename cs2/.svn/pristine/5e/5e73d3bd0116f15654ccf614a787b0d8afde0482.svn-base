@@ -1,0 +1,86 @@
+#include <iostream>
+#include <fstream>
+#include "string.hpp"
+#include "stack.hpp"
+
+String nextToken(std::istream& in)
+{
+    String temp;
+    char c;
+    while (in.get(c) && c != ' ')
+    {
+        if (in.eof()) break;
+        temp += c;
+        if (c == ';')
+        {
+            return temp;
+        }
+    }
+    return temp;
+}
+
+String infixToPrefix(std::istream& in) 
+{
+    stack<String> s;
+    String token = nextToken(in);
+    while (token != ";")
+    {
+        if(in.eof()) return "END_OF_FILE";
+        if(token == ")")
+        {
+            String right = s.pop();
+            String oper = s.pop();
+            String left = s.pop();
+            s.push(oper + left + right);
+        }
+        else
+        {
+            if (token != "(") s.push(token + " ");
+        }
+        token = nextToken(in);
+    }
+    return s.top().substr(0, s.top().length() - 2);
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc == 2)
+    {
+        std::ifstream f(argv[1]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String temp = infixToPrefix(f);
+            if (temp != "END_OF_FILE")
+            {
+                std::cout << temp << std::endl;
+            }
+        }
+    }
+    else if (argc == 3)
+    {
+        std::ifstream f(argv[1]);
+        std::ofstream outputf(argv[2]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String temp = infixToPrefix(f);
+            if (temp != "END_OF_FILE")
+            {
+                outputf << temp << std::endl;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Invalid command line arguments\n";
+    }
+}

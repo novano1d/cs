@@ -1,0 +1,136 @@
+//
+//
+// File:        logentry.cpp  
+//       
+// Version:     1.0
+// Date:        3-18-2022
+// Author:      Matthew Moore
+// 
+// Description: Class implementation for a log entry.
+//
+// 
+
+////////////////////////////////////////////////////////////
+#include <iostream>
+#include <vector> 
+#include "string.hpp" 
+#include "logentry.hpp"
+
+////////////////////////////////////////////////////////// 
+// REQUIRES: String is a line from a log file
+// ENSURES:  String results in 10 splits
+//
+LogEntry::LogEntry(const String &s) 
+{
+    // ...
+    std::vector<String> vec = s.split(' ');
+    if (vec.size() == 10)
+    {
+        host = vec.at(0);
+    
+        //date
+        String day = vec.at(3).substr(1, vec.at(3).findch(1, '/') - 1);
+        String month = vec.at(3).substr(vec.at(3).findch(1, '/') + 1, vec.at(3).findch(1, '/') + 3);
+        int year = vec.at(3).substr(vec.at(3).findch(1, ':') - 4, vec.at(3).findch(1, ':') - 1).toInt();
+        date = Date(day, month, year);
+
+        //time
+        int hour = vec.at(3).substr(1 + vec.at(3).findch(1, ':'), 2 + vec.at(3).findch(1, ':')).toInt();
+        int minute = vec.at(3).substr(4 + vec.at(3).findch(1, ':'), 5 + vec.at(3).findch(1, ':')).toInt();
+        int second = vec.at(3).substr(7 + vec.at(3).findch(1, ':'), 8 + vec.at(3).findch(1, ':')).toInt();
+        time = Time(hour, minute, second);
+
+        request = vec.at(5).substr(1, vec.at(5).length() - 1) + " " + vec.at(6) + " " + vec.at(7).substr(0, vec.at(7).length() - 2);
+
+        status = vec.at(8);
+
+        number_of_bytes = vec.at(9).toInt();
+    }
+    else empty = true;
+}
+
+////////////////////////////////////////////////////////// 
+// REQUIRES:  istream contains log data
+// ENSURES: not end of file 
+//
+std::vector<LogEntry> parse(std::istream& in) {
+    std::vector<LogEntry> result;
+    String pushthis;
+    char ch;
+    in.get(ch);
+    while(!in.eof()) 
+    {
+        if (ch == '\n')
+        {
+            if (pushthis.split(' ').size() == 10)
+                result.push_back(LogEntry(pushthis));
+            pushthis = "";
+        }
+        else
+        {
+            pushthis += ch;
+        }
+        in.get(ch);
+    }
+    // char* temp = nullptr;
+    // while (in.getline(temp, 200))
+    // {
+    //     pushthis = String(temp);
+    //     result.push_back(LogEntry(pushthis));
+    // }
+    return result;
+}
+
+////////////////////////////////////////////////////////// 
+// REQUIRES:  Logentry vector that contains valid data.
+// ENSURES: Each logentry is printed as one line.
+//
+void output_all(std::ostream& out, const std::vector<LogEntry> &i) 
+{
+    for (LogEntry input : i)
+    {
+        if (input.isEmpty())
+        {
+            out << "Empty Logentry";
+        }
+        else
+        {
+            out << "Host: " << input.getHost() << " "; //host
+            out << "Date: " << input.getDate().getDay() << " " << input.getDate().getMonth() << " " << input.getDate().getYear() << " "; // date
+            out << "Time - Hour: " << input.getTime().getHour() << " Minute: " << input.getTime().getMinute() << " Second: " << input.getTime().getSecond() << " "; //time
+            out << "Request: " << input.getRequest() << " "; //request
+            out << "Status: " << input.getStatus() << " "; //status
+            out << "Bytes: " << input.getNumOfBytes() << " "; //bytes
+        }
+        out << std::endl; // new line 
+    }
+}
+
+////////////////////////////////////////////////////////// 
+// REQUIRES:  input vector is of LogEntry type
+// ENSURES: each host is printed as a line
+//
+void by_host(std::ostream& out, const std::vector<LogEntry> &i) 
+{
+    for (LogEntry input : i)
+    {
+        out << input.getHost(); //host
+        out << std::endl; // new line 
+    }
+}
+
+////////////////////////////////////////////////////////// 
+// REQUIRES:  input vector is of LogEntry type
+// ENSURES: number of bytes are 0 if nothing is in the vector
+//
+int byte_count(const std::vector<LogEntry> &i) 
+{
+    int bytes = 0;
+    for (LogEntry input : i)
+    {
+        bytes += input.getNumOfBytes();
+    }
+    return bytes;
+}
+
+ 

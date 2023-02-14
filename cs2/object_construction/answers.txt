@@ -1,0 +1,7 @@
+The problem with this code is that it allows for writing outside the bounds of the array.
+No error is raised because C++ doesn't do bounds checking automatically.
+It looks like there are 32 bytes between the start of str1 and str2 since when I enter 32 as input nothing is written to str2 but when I enter 33 I see X in the first element of str2.
+To test for this logical error you could have a constant with the array length and assert (or have some logic) where applicable that tests that the index of the array that is being accessed is within the bounds of the array.
+To prevent this type of error you must make sure that your code doesn't allow for it to be possible to access any element of the array (size n) past n-1 or below 0.
+When delete[] is included, a runtime error is returned ... "free(): invalid size"
+This indicates a memory error... probably heap corruption.

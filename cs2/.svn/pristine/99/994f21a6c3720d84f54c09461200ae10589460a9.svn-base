@@ -1,0 +1,9 @@
+#ifndef UTILITIES_HPP
+#define UTILITIES_HPP
+#include "string.hpp"
+#include "stack.hpp"
+
+String nextToken(std::istream& in); //grabs next token
+String infixToPostfix(std::istream& in); //converts string from infix to postfix
+
+#endif

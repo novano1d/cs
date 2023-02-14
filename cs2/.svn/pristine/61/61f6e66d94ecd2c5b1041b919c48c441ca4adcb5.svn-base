@@ -1,0 +1,114 @@
+// bigint Test Program
+//
+// Tests:  subscript, uses ==
+//
+// NEED TO IMPLEMENT
+//
+#include <iostream>
+#include <cassert>
+#include "bigint.hpp"
+
+//===========================================================================
+int main () {
+    
+    {
+        // Setup
+        bigint bi(4);
+
+        // Test 
+        int digit = bi[0];
+
+        // Verify
+        assert(bi    == 4);  
+        assert(digit == 4);
+    }
+    
+    {
+        // Setup
+        bigint bi(100);
+
+        // Test 
+        int digit = bi[1];
+
+        // Verify
+        assert(bi    == 100);  
+        assert(digit == 0);
+    }
+
+    {
+        // Setup
+        bigint bi(909019123);
+
+        // Test 
+        int digit = bi[5];
+
+        // Verify
+        assert(bi    == 909019123);  
+        assert(digit == 9);
+    }
+
+    {
+        // Setup
+        bigint bi(9999999);
+
+        // Test 
+        int digit = bi[6];
+
+        // Verify
+        assert(bi    == 9999999);  
+        assert(digit == 9);
+    }
+        {
+        // Setup
+        bigint bi("4");
+
+        // Test 
+        int digit = bi[0];
+
+        // Verify
+        assert(bi    == 4);  
+        assert(digit == 4);
+    }
+    
+    {
+        // Setup
+        bigint bi("100");
+
+        // Test 
+        int digit = bi[1];
+
+        // Verify
+        assert(bi    == 100);  
+        assert(digit == 0);
+    }
+
+    {
+        // Setup
+        bigint bi("909019123");
+
+        // Test 
+        int digit = bi[5];
+
+        // Verify
+        assert(bi    == 909019123);  
+        assert(digit == 9);
+    }
+
+    {
+        // Setup
+        bigint bi("9999999");
+
+        // Test 
+        int digit = bi[6];
+
+        // Verify
+        assert(bi    == 9999999);  
+        assert(digit == 9);
+    }
+
+    //Add test cases!!
+
+    std::cout << "Done testing subscript." << std::endl;
+    return 0;
+}
+

@@ -1,0 +1,84 @@
+#include "bigint.hpp"
+
+bigint::bigint()
+{
+
+}
+
+bigint::bigint(int in)
+{
+    while(in != 0)
+    {
+        arr[size] = in % 10;
+        in /= 10;
+        size++;
+    }
+}
+
+bigint::bigint(const char in[])
+{
+    for (int i = 0; (i < CAPACITY) && in[i] != 0; i++)
+    {
+        size++;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = in[size - i - 1] - '0';
+    } 
+}
+
+void bigint::debugPrint(std::ostream& o) const
+{
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if (i != 0)
+        {
+            o << arr[i] << "|";
+        }
+        else
+        {
+            o << arr[i];
+        }
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const bigint& in)
+{
+    bool possibleLeadingZero = true;
+    for (int i = in.size - 1; i >= 0; i--)
+    {
+        if (((in.size - 1 - i) % 80 == 0) && (i != 0) && (i != in.size - 1))
+        {
+            out << std::endl;
+        }
+        
+        if (possibleLeadingZero && in.arr[i] == 0) {}
+        else
+        {
+            out << in.arr[i];
+            if (possibleLeadingZero)
+            {
+                possibleLeadingZero = false;
+            } 
+        }
+    }
+    return out;
+}
+
+bool bigint::operator==(const bigint& rhs)
+{
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        if (arr[i] != rhs.arr[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator==(int lhs, const bigint& rhs)
+{
+    bigint lhsTemp = bigint(lhs);
+    return lhsTemp == rhs;
+}

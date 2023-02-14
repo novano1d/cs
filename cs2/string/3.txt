@@ -1,0 +1,7 @@
+131.123.47.176 - - [18/Sep/2002:12:05:25 -0400] "GET /~darci/ HTTP/1.0" 200 5625
+131.123.47.176 - - [18/Sep/2002:12:05:26 -0400] "GET /~darci/forstudents/ HTTP/1.0" 200 4544
+131.123.47.176 - - [18/Sep/2002:12:05:29 -0400] "GET /~darci/forstudents/at/ex2.html HTTP/1.0" 200 5929
+131.123.34.138 - - [18/Sep/2002:12:05:40 -0400] "GET /~collard/ HTTP/1.1" 304 -
+131.123.177.43 - - [18/Sep/2002:12:05:40 -0400] "GET /~kschaffe/teaching/slides/style-toc.html HTTP/1.1" 200 1139
+131.123.177.43 - - [18/Sep/2002:12:05:40 -0400] "GET /~kschaffe/teaching/slides/blue-slide.css HTTP/1.1" 200 1183
+131.123.47.176 - - [18/Sep/2002:12:05:25 -0400] "GET /~darci/ HTTP/1.0" 200 5625

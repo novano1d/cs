@@ -1,0 +1,134 @@
+#include "bigint.hpp"
+
+bigint::bigint()
+{
+
+}
+
+bigint::bigint(int in)
+{
+    while(in != 0)
+    {
+        arr[size] = in % 10;
+        in /= 10;
+        size++;
+    }
+}
+
+bigint::bigint(const char in[])
+{
+    for (int i = 0; (i < CAPACITY) && in[i] != 0; i++)
+    {
+        size++;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = in[size - i - 1] - '0';
+    } 
+}
+
+void bigint::debugPrint(std::ostream& o) const
+{
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if (i != 0)
+        {
+            o << arr[i] << "|";
+        }
+        else
+        {
+            o << arr[i];
+        }
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const bigint& in)
+{
+    bool possibleLeadingZero = true;
+    int toBeModded = 0;
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if ((toBeModded % 80 == 0) && !possibleLeadingZero)
+        {
+            out << std::endl;
+        }
+        if (possibleLeadingZero && in.arr[i] == 0) {}
+        else
+        {
+            out << in.arr[i];
+            if (possibleLeadingZero)
+            {
+                possibleLeadingZero = false;
+            }
+            toBeModded++;
+        }
+    }
+    if (possibleLeadingZero == true)
+    {
+        out << "0";
+    }
+    return out;
+}
+
+bool bigint::operator==(const bigint& rhs)
+{
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        if (arr[i] != rhs.arr[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator==(int lhs, const bigint& rhs)
+{
+    bigint lhsTemp = bigint(lhs);
+    return lhsTemp == rhs;
+}
+
+int bigint::operator[](int i) const
+{
+    assert(i >= 0);
+    assert(i < CAPACITY);
+    return arr[i];
+}
+
+int& bigint::operator[](int i)
+{
+    assert(i >= 0);
+    assert(i < CAPACITY);
+    return arr[i];
+}
+
+bigint bigint::operator+(const bigint& in) const
+{
+    bigint out = bigint();
+    int carryover = 0;
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        int sum = in[i] + arr[i] + carryover;
+        if (sum < 10)
+        {
+            out.arr[i] = sum;
+            carryover = 0;
+        }
+        else
+        {
+            carryover = sum / 10;
+            out.arr[i] = sum % 10;
+        }
+    }
+    return out;
+}
+
+std::istream& operator>>(std::istream& istr, bigint& in)
+{
+    std::string input, num;
+    std::getline(istr, num, ';');
+    num.erase(remove_if(num.begin(), num.end(), isspace), num.end()); //gets rid of white space messing up code
+    char *numArray = &num[0];
+    in = bigint(numArray);
+    return istr;
+}

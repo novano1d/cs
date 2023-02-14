@@ -1,0 +1,18 @@
+#ifndef BIGINT_HPP
+#define BIGINT_HPP
+#include <iostream>
+
+const int CAPACITY = 200;
+
+class bigint
+{
+public:
+    bigint(); //default constructor
+    bigint(int); //init to int
+    bigint(const char[]); //init to char array
+    void debugPrint(std::ostream&) const;
+private:
+    int arr[CAPACITY] = {0};
+    int size = 0;
+};
+#endif

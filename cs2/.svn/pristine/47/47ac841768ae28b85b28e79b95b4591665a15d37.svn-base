@@ -1,0 +1,101 @@
+// bigint Test Program
+//
+// Tests:  times_10, uses ==
+//
+// NEED TO IMPLEMENT
+//
+#include <iostream>
+#include <cassert>
+#include "bigint.hpp"
+
+//===========================================================================
+int main () {
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test   
+        bi = bi.times10(0);
+
+        // Verify
+        assert(bi == 3); 
+    }
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test   
+        bi = bi.times10(1);
+
+        // Verify
+        assert(bi == 30);  
+    }
+
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(0);
+
+        // Test   
+        bi = bi.times10(1);
+
+        // Verify
+        assert(bi == 0);  
+    }
+
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(9999999);
+
+        // Test   
+        bi = bi.times10(2);
+
+        // Verify
+        assert(bi == 999999900);  
+    }
+    
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(50);
+
+        // Test   
+        bi = bi.times10(5);
+
+        // Verify
+        assert(bi == 5000000);  
+    }
+
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi("245234");
+
+        // Test   
+        bi = bi.times10(2);
+
+        // Verify
+        assert(bi == 24523400);  
+    }
+
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(9);
+
+        // Test   
+        bi = bi.times10(9);
+
+        // Verify
+        assert(bi == bigint("9000000000"));  
+    }
+    
+    //Add test cases as needed.
+
+    std::cout << "Done testing times_10" << std::endl;
+    return 0;
+}
+

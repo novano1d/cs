@@ -1,0 +1,42 @@
+#include "bigint.hpp"
+
+bigint::bigint()
+{
+
+}
+
+bigint::bigint(int in)
+{
+    while(in != 0)
+    {
+        arr[size] = in;
+        in /= 10;
+        size++;
+    }
+}
+
+bigint::bigint(const char in[])
+{
+    for (int i = 0; (i < CAPACITY) && (in[i] - '0' >= 0) && (in[i] - '0' <= 9); i++) //garbage value could be between these
+    {
+        arr[i] = in[i] - '0';
+        size++;
+    }
+}
+
+void bigint::debugPrint(std::ostream& o) const
+{
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if (i != 0)
+        {
+            o << arr[i] << "|";
+        }
+        else
+        {
+            o << arr[i];
+        }
+    }
+    o << " size:" << size;
+    
+}

@@ -1,0 +1,178 @@
+#include <iostream>
+#include <fstream>
+#include "string.hpp"
+#include "stack.hpp"
+
+int tmpval = 1;
+String intToString(int in)
+{
+    String temp;
+    int t = 0;
+    while (in != 0)
+    {
+        temp += (in % 10) + '0';
+        in /= 10;
+        t++;
+    }
+    String out;
+    for (int i = temp.length() - 1; i >= 0; i--) out += temp[i];
+    return out;
+}
+
+String nextToken(std::istream& in)
+{
+    String temp;
+    char c;
+    while (in.get(c) && c != ' ')
+    {
+        if (in.eof()) break;
+        temp += c;
+        if (c == ';')
+        {
+            return temp;
+        }
+    }
+    return temp;
+}
+
+String infixToPrefix(std::istream& in) 
+{
+    stack<String> s;
+    String token = nextToken(in);
+    while (token != ";")
+    {
+        if(in.eof()) return "END_OF_FILE";
+        if(token == ")")
+        {
+            String right = s.pop();
+            String oper = s.pop();
+            String left = s.pop();
+            s.push(oper + left + right);
+        }
+        else
+        {
+            if (token != "(") s.push(token + " ");
+        }
+        token = nextToken(in);
+    }
+    return s.top().substr(0, s.top().length() - 2);
+}
+
+/*
+Is it more complex than evaluating postfix? Why?
+
+It is no more complicated than evaluating postfix. The only thing that changes between the two methods is the one line that pushes the operator and the left and right tokens.
+*/
+
+String evaluate(String left, String op, String right, std::ostream& out)
+{
+    out << "   LD     " << left << std::endl;
+    if(op == "+") 
+    {
+        out << "   AD     " << right << std::endl;
+    }
+    if(op == "-") 
+    {
+        out << "   SB     " << right << std::endl;
+    }
+    if(op == "/")
+    {
+        out << "   DV     " << right << std::endl;
+    } 
+    if(op == "*")
+    {
+        out << "   MU     " << right << std::endl;
+    }
+    String temp = "TMP" + intToString(tmpval);
+    tmpval++;
+    out << "   ST     " << temp << std::endl;
+    return temp;
+}
+
+String prefixToAssembly(String expr, std::ostream& out)
+{
+    std::vector<String> tokens = expr.split(' ');
+    stack<String> stck;
+    for(int i = tokens.size() - 1; i >= 0; i--)
+    {
+        String s = tokens[i];
+        if (!(s == "+" || s == "-" || s == "*" || s == "/"))
+        {
+            stck.push(s);
+        }
+        else
+        {
+            String right = stck.pop();
+            String left = stck.pop();
+            stck.push(evaluate(right, s, left, out));
+        }
+    }
+    tmpval = 1;
+    return stck.top(); //returns the reuslt of the expression... kinda pointless
+}
+
+
+int main(int argc, char *argv[])
+{
+    if (argc == 2)
+    {
+        std::ifstream f(argv[1]);
+        std::ifstream f2(argv[1]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String temp = infixToPrefix(f);
+            if (temp != "END_OF_FILE")
+            {
+                String infix;
+                char ch;
+                while (f2.get(ch))
+                {
+                    if(ch == ';') break;
+                    if(ch == '\n' || ch == '\r' || ch == '\036' || ch == '\025') continue;
+                    infix += ch;
+                }
+                std::cout << "Infix Expression: " << infix << std::endl;
+                std::cout << "Prefix Expression: " << temp << std::endl << std::endl;
+                prefixToAssembly(temp, std::cout);
+            }
+        }
+    }
+    else if (argc == 3)
+    {
+        std::ifstream f(argv[1]);
+        std::ifstream f2(argv[1]);
+        std::ofstream outputf(argv[2]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String infix;
+            char ch;
+            while (f2.get(ch))
+            {
+                if(ch == ';') break;
+                if(ch == '\n' || ch == '\r' || ch == '\036' || ch == '\025') continue;
+                infix += ch;
+            }
+            String temp = infixToPrefix(f);
+            if (temp != "END_OF_FILE")
+            {
+                outputf << "Infix Expression: " << infix << std::endl;
+                outputf << "Prefix Expression: " << temp << std::endl << std::endl;
+                prefixToAssembly(temp, outputf);
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Invalid command line arguments\n";
+    }
+}

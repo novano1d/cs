@@ -1,0 +1,7 @@
+The function that was the slowest was the bubble sort. The bubble sort function took 9.61 seconds. This was followed by the selection sort that took 8.53 seconds.
+The quickest function was quick sort which took less than a 100th of a seocnd to run.
+
+The reason bubble sort turned out to be the slowest sorting method was because bubble sort seems to go through the entire list of data multiple times, only being able to swap
+an element by one position at a time and has to do a lot of comparison. Since it can only move each element by one position at a time and requires looping through the list many
+times, it is consequently very slow for large data sets. Likewise, selection sort requires looping through the entire list many times which causes it to also be slow for 
+large data sets. 

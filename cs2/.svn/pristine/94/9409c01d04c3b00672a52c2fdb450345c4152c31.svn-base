@@ -1,0 +1,217 @@
+  /**
+   * Matthew Moore
+   * bigint.cpp
+   * cs23001
+   */
+
+#include "bigint.hpp"
+
+bigint::bigint()
+{
+    //set arr to {0} already in hpp
+}
+
+bigint::bigint(int in)
+{
+    while(in != 0) //extracts each digit from in and assigns it to the array
+    {
+        arr[size] = in % 10;
+        in /= 10;
+        size++;
+    }
+}
+
+bigint::bigint(const char in[])
+{
+    for (int i = 0; (i < CAPACITY) && in[i] != 0; i++) //find size of char array
+    {
+        size++;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = in[size - i - 1] - '0'; //assign values in bigint array to values in char array
+    } 
+}
+
+//prints bigint in a format that is useful for debugging
+void bigint::debugPrint(std::ostream& o) const
+{
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if (i != 0)
+        {
+            o << arr[i] << "|";
+        }
+        else
+        {
+            o << arr[i];
+        }
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const bigint& in)
+{
+    bool possibleLeadingZero = true;
+    int toBeModded = 0;
+    for (int i = CAPACITY - 1; i >= 0; i--)
+    {
+        if ((toBeModded % 80 == 0) && !possibleLeadingZero) //create a line break if 80 characters are printed
+        {
+            out << std::endl;
+        }
+        if (!(possibleLeadingZero && in.arr[i] == 0)) //avoids printing 0s leading to the first significant digit of bigint
+        {
+            out << in.arr[i];
+            if (possibleLeadingZero)
+            {
+                possibleLeadingZero = false;
+            }
+            toBeModded++;
+        }
+    }
+    if (possibleLeadingZero) //print 0 if the bigint is equal to zero
+    {
+        out << "0"; 
+    }
+    return out;
+}
+
+bool bigint::operator==(const bigint& rhs)
+{
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        if (arr[i] != rhs.arr[i])
+        {
+            return false; //returns false if the bigint arrays do not completely match
+        }
+    }
+    return true;
+}
+
+bool operator==(int lhs, const bigint& rhs)
+{
+    bigint lhsTemp = bigint(lhs); //creates a temp bigint object so that we can just use the above == operator definition
+    return lhsTemp == rhs;
+}
+
+int bigint::operator[](int i) const
+{
+    //ensure that i is withind bounds of arr
+    assert(i >= 0);
+    assert(i < CAPACITY);
+    return arr[i];
+}
+
+int& bigint::operator[](int i)
+{
+    assert(i >= 0);
+    assert(i < CAPACITY);
+    return arr[i];
+}
+
+bigint bigint::operator+(const bigint& in) const
+{
+    bigint out = bigint();
+    int carryover = 0;
+    //replicates process for long addition
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        int sum = in[i] + arr[i] + carryover;
+        if (sum < 10)
+        {
+            out.arr[i] = sum;
+            carryover = 0;
+        }
+        else
+        {
+            carryover = sum / 10;
+            out.arr[i] = sum % 10;
+        }
+    }
+    return out;
+}
+
+std::istream& operator>>(std::istream& istr, bigint& in)
+{
+    char c;
+    int index = 0;
+    int numarr[CAPACITY] = {0};
+    while (istr.get(c)) //keeps getting characters from input stream
+    {
+        int num = c - '0';
+        if (num >= 0 && num < 10 && !std::isspace(c)) //avoids taking in whitespace characters and ensures character is a valid digit
+        {
+            numarr[index] = num; //fills temp numarr
+            index++;
+        }
+        if (c == ';') //if semicolon is reached we want to stop
+        {
+            for (int i = 0; i < index; i++)
+            {
+                in.arr[i] = numarr[index - i - 1]; //uses the temp array to format the array in bigint properly
+            } 
+            return istr;
+        }
+    }
+    return istr;
+}
+
+bigint bigint::timesDigit(int in) const
+{
+    //verify input is single digit
+    assert(in >= 0);
+    assert(in < 10);
+    if (in == 0)
+    {
+        return bigint(0);
+    }
+    bigint out;
+    for (int i = 0; i < in; i++)
+    {
+        out = out + *this; //adds the value of the current object to itself "in" times
+    }
+    return out;
+}
+
+bigint bigint::times10(int n) const
+{
+    assert(n >= 0);
+    if (n == 0) return *this;
+    char constructIn[CAPACITY];
+    bigint out;
+    //adds trailing 0s
+    for (int i = 0; i < n; i++)
+    {
+        out[i] = 0;
+    }
+    
+    //adds rest of digits back
+    for (int i = 0; i < CAPACITY - n; i++)
+    {
+        out[i + n] = arr[i];
+    }
+    return out;
+}
+
+bigint bigint::operator*(const bigint &in) const
+{
+    bigint product;
+    for (int i = 0; i < CAPACITY - 1; i++)
+    {
+        bigint temp = this->timesDigit(in[i]);
+        product = product + temp.times10(i);
+    }
+    return product;
+}
+
+bigint nfact(int n)
+{
+    if (n >= 1)
+    {
+        return nfact(n - 1) * n; //recursion used to calculate factorial
+    }
+    else
+    {
+        return bigint(1); //base case
+    }
+}

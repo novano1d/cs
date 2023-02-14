@@ -1,0 +1,69 @@
+#include "utilities.hpp"
+#include <iostream>
+#include <fstream>
+
+//Note that this is vastly overcomplicated because I didn't realize we could use split for milestone 2 and didn't want to rewrite it
+int main(int argc, char *argv[])
+{
+    if (argc == 2)
+    {
+        std::ifstream f(argv[1]);
+        std::ifstream f2(argv[1]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String temp = infixToPostfix(f);
+            if (temp != "END_OF_FILE")
+            {
+                String infix;
+                char ch;
+                while (f2.get(ch))
+                {
+                    if(ch == ';') break;
+                    if(ch == '\n' || ch == '\r' || ch == '\036' || ch == '\025') continue;
+                    infix += ch;
+                }
+                std::cout << "Infix Expression: " << infix << std::endl;
+                std::cout << "Postfix Expression: " << temp << std::endl << std::endl;
+                postfixToAssembly(temp, std::cout);
+            }
+        }
+    }
+    else if (argc == 3)
+    {
+        std::ifstream f(argv[1]);
+        std::ifstream f2(argv[1]);
+        std::ofstream outputf(argv[2]);
+        if (!f.is_open())
+        {
+            std::cout << "Unable to open file\n";
+            return 1;
+        }
+        while (!f.eof())
+        {
+            String infix;
+            char ch;
+            while (f2.get(ch))
+            {
+                if(ch == ';') break;
+                if(ch == '\n' || ch == '\r' || ch == '\036' || ch == '\025') continue;
+                infix += ch;
+            }
+            String temp = infixToPostfix(f);
+            if (temp != "END_OF_FILE")
+            {
+                outputf << "Infix Expression: " << infix << std::endl;
+                outputf << "Postfix Expression: " << temp << std::endl << std::endl;
+                postfixToAssembly(temp, outputf);
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Invalid command line arguments\n";
+    }
+}
